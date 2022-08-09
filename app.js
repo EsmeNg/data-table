@@ -1,8 +1,7 @@
 const table = document.querySelector(".main__table")
 const darkModeToggle = document.getElementById("dark__mode__toggle")
-//const orderChecker = document.querySelectorAll(".table__cell--checkbox")
 
-//render資料
+//  render頁面資料
 function renderFakeData(number) {
   for(let i = 1; i <= number; i++) {
     tbody.innerHTML += `
@@ -46,7 +45,7 @@ function renderFakeData(number) {
 }
 renderFakeData(15)
 
-//暗黑模式
+//  暗黑模式
 const darkModeToggleHandler = event => {
   if (event.target.checked) {
     document.documentElement.setAttribute("data-theme","dark")
@@ -56,19 +55,33 @@ const darkModeToggleHandler = event => {
 }
 darkModeToggle.addEventListener("change", darkModeToggleHandler)
 
-const toggleMenu = event => {
-  const menu = document.getElementById("action__menu_1")
-  menu.classList.toggle("hidden");
-}
-
-//點擊table row和actions的互動
+//  處理table的互動
 table.addEventListener('click', e => {
+  //  actions -展開或摺疊小清單
   if(e.target.matches('.cell__action__icon')) {
     const toggleButton = e.target.nextElementSibling
     toggleButton.classList.toggle('hidden')
   }
+
+  //  checkbox單選 - 改變單行顏色
   if(e.target.matches('.cell_checkbox')) {
     const tableRow = e.target.parentElement.parentElement
     tableRow.classList.toggle('selected')
+  }
+
+  //  checkbox全選 - 勾選或取消所有checkbox和行的顏色
+  if(e.target.matches('thead tr input[type="checkbox"]')) {
+    function checkBoxSelectAllHandler(selectStsatus) {
+      const checkboxList = document.querySelectorAll('tbody tr td input[type="checkbox"]')
+      for (let checkbox of checkboxList) {
+        checkbox.checked = selectStatus
+        if(selectStatus) {
+          checkbox.parentElement.parentElement.classList.add('selected')
+        } else checkbox.parentElement.parentElement.classList.remove('selected')
+      }
+    }
+    if(e.target.checked) {
+      checkBoxSelectAllHandler(true)
+    } else checkBoxSelectAllHandler(false)
   }
 })
